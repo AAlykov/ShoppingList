@@ -1,7 +1,7 @@
 package com.tomsk.alykov.shoppinglist.domain
 
 class AddShopItemUseCase (private val shopListRepository: ShopListRepository){
-    fun addShopItem(shopItem: ShopItem): ShopItem {
+    fun addShopItem(shopItem: ShopItem) {
         shopListRepository.addShopItem(shopItem)
     }
 }

@@ -2,6 +2,6 @@ package com.tomsk.alykov.shoppinglist.domain
 
 class GetShopListUseCase(private val shopListRepository: ShopListRepository) {
     fun getShopList(): List<ShopItem> {
-        shopListRepository.getShopList()
+        return shopListRepository.getShopList()
     }
 }
