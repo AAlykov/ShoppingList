@@ -11,6 +11,10 @@ import com.tomsk.alykov.shoppinglist.domain.ShopItem
 
 class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
 
+    //var onShopItemLongClickListener: OnShopItemLongClickListener? = null
+    var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
+    var onShopItemClickListener: OnShopItemClickListener? = null
+
     var shopList = listOf<ShopItem>()
     set(value) {
         field = value
@@ -39,9 +43,19 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>(
         var status = ""
         if (shopItem.enabled) status = "Active" else status = "Not Active"
 
-        holder.itemView.setOnClickListener {
+        holder.itemView.setOnLongClickListener {
+            //onShopItemLongClickListener?.onShopItemLongClick(shopItem)
+            onShopItemLongClickListener?.invoke(shopItem)
             true
         }
+
+        holder.itemView.setOnClickListener {
+            onShopItemClickListener?.onShopItemClick(shopItem)
+            //onShopItemLongClickListener?.invoke(shopItem)
+            true
+        }
+
+
 
         holder.tvName.text = "${shopItem.name}  $status"
         holder.tvCount.text = shopItem.count.toString()
@@ -69,5 +83,13 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>(
 
     override fun getItemCount(): Int {
         return shopList.size
+    }
+
+    interface OnShopItemLongClickListener {
+        fun onShopItemLongClick(shopItem: ShopItem)
+    }
+
+    interface OnShopItemClickListener {
+        fun onShopItemClick(shopItem: ShopItem)
     }
 }
