@@ -6,24 +6,19 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tomsk.alykov.shoppinglist.R
 import com.tomsk.alykov.shoppinglist.domain.ShopItem
 
-class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
+//class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
+class ShopListAdapter: ListAdapter<ShopItem, ShopListAdapter.ShopItemViewHolder>(ShopItemDiffCallback()) {
 
     //var onShopItemLongClickListener: OnShopItemLongClickListener? = null
     var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
     var onShopItemClickListener: OnShopItemClickListener? = null
 
-    var shopList = listOf<ShopItem>()
-    set(value) {
-        val callback = ShopListDiffCallback(shopList, value)
-        val diffResult = DiffUtil.calculateDiff(callback)
-        diffResult.dispatchUpdatesTo(this)
-        field = value
-        //notifyDataSetChanged()
-    }
+
 
     class ShopItemViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val tvName = view.findViewById<TextView>(R.id.tv_name)
@@ -43,7 +38,7 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>(
     }
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
-        val shopItem = shopList[position]
+        val shopItem = getItem(position)
         var status = ""
         if (shopItem.enabled) status = "Active" else status = "Not Active"
 
@@ -76,7 +71,7 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>(
     }
 
     override fun getItemViewType(position: Int): Int {
-        val item = shopList[position]
+        val item = getItem(position)
         return if (item.enabled) {
           100
         } else {
@@ -85,9 +80,7 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>(
         //return super.getItemViewType(position)
     }
 
-    override fun getItemCount(): Int {
-        return shopList.size
-    }
+
 
     interface OnShopItemLongClickListener {
         fun onShopItemLongClick(shopItem: ShopItem)
